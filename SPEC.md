@@ -92,6 +92,7 @@
 /                          Landing (public)
 /login                     Sign in (email + Google)
 /register                  Sign up
+/admin/login               Astrologer/admin sign in
 /dashboard                 Customer dashboard (post-login)
 /dashboard/book            Booking wizard (4 steps)
 /dashboard/profile         Customer profile + booking history
@@ -180,7 +181,8 @@
 
 ### 6.3 Daily Tarot Message Publisher
 
-- Admin widget/form: card title, image (optional), advice text, effective date.
+- Admin widget/form: card title, image file picker (optional), advice text, effective date.
+- Image picker accepts PNG, JPEG, and WebP files up to 5MB and stores the returned upload URL in `cardImage`.
 - **Post / Update / Edit / Delete** daily message shown on all customer dashboards.
 - Preview before publish.
 
@@ -282,7 +284,7 @@ The first API implementation uses Next.js App Router route handlers with a typed
 | `POST` | `/api/auth/register` | Create a customer and session |
 | `POST` | `/api/auth/login` | Sign in and create a session |
 | `POST` | `/api/auth/logout` | Clear the session cookie |
-| `GET` | `/api/auth/me` | Return the current customer |
+| `GET` | `/api/auth/me` | Return the current signed-in user, including their portal role |
 | `GET/PATCH` | `/api/profile` | Read or update customer profile |
 | `GET/POST` | `/api/bookings` | List or create customer bookings |
 | `GET` | `/api/bookings/:id` | Read one customer booking |
@@ -298,4 +300,4 @@ Sessions use an HTTP-only `btt_session` cookie signed with `JWT_SECRET`. Passwor
 | `POST` | `/api/admin/bookings/:id/verify` | Approve or reject submitted payment |
 | `POST` | `/api/admin/daily-message` | Publish or update a daily message |
 
-Admin bootstrap, receipt-file upload handling, production database storage, and frontend API clients remain follow-up work in `TODO.md`.
+Admin bootstrap and production database storage remain follow-up work in `TODO.md`. The implemented login flow routes customers to `/dashboard` and users with `role: "admin"` to `/admin`; the shared app shell prevents users from remaining in the wrong portal.

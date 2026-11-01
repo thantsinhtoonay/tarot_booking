@@ -24,6 +24,7 @@ The first application UI is now implemented as well: a responsive public landing
 - Customer dashboard with daily message and booking history
 - Four-step booking flow: focus, format/time, details, payment proof
 - Admin overview, booking review, monthly calendar, and daily-message publisher
+- Admin daily-message image picker with authenticated PNG/JPEG/WebP upload, thumbnail preview, and customer-card rendering
 - Landing-page visual pass: header-safe spacing, readable hero hierarchy, intentional CTA/proof row, and responsive navigation
 - About-page visual hierarchy: astrologer-first bio card with circular photo frame; developer story remains secondary below
 - Consistent JSON response envelope:
@@ -128,6 +129,7 @@ There are not yet automated unit or integration test files. Until those are adde
 | `/terms` | Terms information |
 | `/login` | Customer sign in |
 | `/register` | Customer registration |
+| `/admin/login` | Astrologer/admin sign in |
 | `/dashboard` | Customer dashboard and daily message |
 | `/dashboard/book` | Four-step booking flow |
 | `/dashboard/profile` | Customer profile and booking history |
@@ -147,8 +149,8 @@ There are not yet automated unit or integration test files. Until those are adde
 6. Submit the booking and confirm the success state.
 7. Open `/dashboard/profile` and confirm the booking appears with `pending payment` status.
 8. Sign out and sign back in through `/login`.
-9. For admin testing, promote a local test user to `admin` in `.data/db.json`, sign in again, and verify `/admin` and `/admin/bookings`.
-10. Publish a daily message from `/admin/daily`, then refresh `/dashboard` as the customer and confirm the message appears.
+9. For admin testing, promote a local test user to `admin` in `.data/db.json`, sign out, and sign in through `/admin/login`. Admin users are also redirected automatically to `/admin` when they use `/login`; verify `/admin` and `/admin/bookings`.
+10. Open `/admin/daily`, choose a tarot image with the file picker (PNG/JPG/WebP, maximum 5MB), confirm the thumbnail preview, publish the daily message, then refresh `/dashboard` as the customer and confirm both text and image appear.
 11. Check the public landing page at desktop width and confirm the fixed header never overlaps the hero eyebrow or heading.
 12. Check the landing and About pages below 580px wide: navigation remains usable, hero text stays within the viewport, and astrologer/developer cards stack without horizontal overflow.
 
@@ -348,7 +350,7 @@ Invoke-RestMethod "http://localhost:3000/api/daily-message?date=2026-10-30"
 
 ## Admin API testing
 
-Admin endpoints require a user whose stored `role` is `admin`. No admin bootstrap endpoint exists yet.
+Admin endpoints and the admin portal require a user whose stored `role` is `admin`. There is no public admin bootstrap endpoint; local development uses the role-promotion step below. After promotion, sign in through `/login`; the login screen reads the returned user role and sends admins to `/admin` automatically.
 
 For local-only testing, stop the dev server, open `.data/db.json`, and change one user record:
 
@@ -357,6 +359,50 @@ For local-only testing, stop the dev server, open `.data/db.json`, and change on
   "role": "admin"
 }
 ```
+
+PowerShell shortcut for a user created as `admin-test@example.com`:
+
+```powershell
+$db = Get-Content .data\db.json -Raw | ConvertFrom-Json
+$user = $db.users | Where-Object { $_.email -eq "admin-test@example.com" }
+if (-not $user) { throw "User not found" }
+$user.role = "admin"
+$db | ConvertTo-Json -Depth 20 | Set-Content .data\db.json
+```
+
+Restart the dev server, sign out of the browser, and sign in at `/admin/login`. The login response includes the user's role, so an admin is sent to `/admin` automatically. Opening `/dashboard` as an admin also redirects to `/admin`; a customer opening `/admin` is sent back to `/dashboard`.
+
+### Clear login instructions
+
+Customer login:
+
+1. Open `/register` and create a customer account.
+2. After registration, use `/login` for future sign-ins.
+3. Customer accounts open `/dashboard` automatically.
+
+Local admin login:
+
+1. Create a normal account at `/register` using a dedicated email such as `admin-test@example.com`.
+2. Stop the dev server and change that user's `role` to `admin` using the PowerShell command above.
+3. Restart the dev server.
+4. Open `/admin/login` and sign in with the same email and password.
+5. The admin portal opens at `/admin`.
+
+Admin access is not created by public registration. If `/admin/login` says the account does not have astrologer portal access, the user's stored role is still `customer`, or the local database was reset and the user has not been promoted again.
+
+The admin daily-message image picker uploads through `/api/upload` and stores the returned URL in the existing `cardImage` field. No filesystem path is typed into the daily-message form.
+
+For a repeatable local setup, you can create or update an admin account without editing JSON manually:
+
+```powershell
+npm run admin:set -- admin@example.com "replace-with-a-password"
+```
+
+The command stores only a scrypt password hash in `.data/db.json`. It creates the local database if it does not exist, or updates the matching email to `role: "admin"` if it already exists.
+
+If a signed-out visitor opens `/admin` directly, the protected shell sends them to `/admin/login` automatically.
+
+`/admin/login` is intentionally outside the protected admin shell so the login form can render for signed-out visitors.
 
 Then sign in as that user and preserve the returned session in a separate PowerShell web session.
 
@@ -422,7 +468,7 @@ if (Test-Path .data\db.json) {
 }
 ```
 
-Make the next API request to regenerate the database.
+This clears all local customer/admin accounts, profiles, bookings, payment verifications, daily messages, and generated slots. Make the next API request to regenerate a clean database. Uploaded receipt files under `.data/uploads` are not removed by this command.
 
 ## Route summary
 

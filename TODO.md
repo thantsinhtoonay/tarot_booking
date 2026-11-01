@@ -4,7 +4,6 @@ Living backlog. Check off when done; move finished items under **Done**.
 
 ## In progress / next
 
-- [ ] Add frontend clients and UI routes for the API endpoints
 - [ ] Add a secure admin bootstrap flow for the first admin account
 - [ ] Replace file-backed mock persistence with production database storage before launch
 - [ ] Confirm Burmese letter-spacing/line-height on landing + book (browser check with `lang="my"`)
@@ -27,6 +26,10 @@ Living backlog. Check off when done; move finished items under **Done**.
 ## Done (recent)
 
 - [x] API foundation: typed mock database, health/services/slots endpoints, cookie sessions, profile, bookings, payment submission, daily messages, and admin verification/publishing routes
+- [x] Admin portal access: role-aware login redirect to `/admin`, customer/admin portal guards, and documented local admin promotion flow
+- [x] Admin portal rebuild: dedicated admin login, dashboard summary, booking search/review, calendar controls, and daily-message preview
+- [x] Daily tarot image picker: admin upload, validation, preview, and customer dashboard rendering
+- [x] Frontend clients and UI routes for the API endpoints
 - [x] README: setup, route reference, PowerShell smoke tests, admin verification flow, and local database reset instructions
 - [ ] Production hardening: middleware security headers + rate limits, auth cookie-only tokens, upload auth, receipt validation, booking idempotency chain
 - [ ] SEO: metadata/OG, robots, sitemap, landing `h1`, public page titles

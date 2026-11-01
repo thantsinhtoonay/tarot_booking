@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "node scripts/build.mjs",
     "start": "next start",
+    "admin:set": "node scripts/set-admin.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

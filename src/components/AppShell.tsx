@@ -20,11 +20,17 @@ export function AppShell({ children, portal = "customer" }: { children: ReactNod
   const [error, setError] = useState("");
 
   useEffect(() => {
-    void api<User>("/api/auth/me").then(setUser).catch(() => router.replace("/login")).finally(() => setLoading(false));
-  }, [router]);
+    void api<User>("/api/auth/me").then(setUser).catch(() => router.replace(portal === "admin" ? "/admin/login" : "/login")).finally(() => setLoading(false));
+  }, [portal, router]);
 
   useEffect(() => {
-    if (!loading && user && portal === "admin" && user.role !== "admin") router.replace("/dashboard");
+    if (!loading && user && portal === "admin" && user.role !== "admin") {
+      router.replace("/dashboard");
+      return;
+    }
+    if (!loading && user && portal === "customer" && user.role === "admin") {
+      router.replace("/admin");
+    }
   }, [loading, portal, router, user]);
 
   if (loading) return <Spinner label="Checking your session…" />;
