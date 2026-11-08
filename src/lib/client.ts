@@ -16,6 +16,6 @@ export function money(value: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "MMK", maximumFractionDigits: 0 }).format(value);
 }
 
-export function dateLabel(value: string) {
-  return new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric" }).format(new Date(`${value}T00:00:00`));
+export function dateLabel(value: string, locale = "en-US") {
+  return new Intl.DateTimeFormat(locale, { weekday: "short", month: "short", day: "numeric" }).format(new Date(`${value}T00:00:00`));
 }

@@ -18,13 +18,18 @@ export async function GET(request: NextRequest) {
   const database = await readDatabase();
   const bookings = database.bookings
     .filter((booking) => !status || booking.status === status)
-    .map((booking) => ({
-      ...booking,
-      customer: database.users.find((user) => user.id === booking.userId)?.name ?? "Unknown customer",
-      readingType: database.readingTypes.find((item) => item.id === booking.readingTypeId),
-      sessionFormat: database.sessionFormats.find((item) => item.id === booking.sessionFormatId),
-      slot: database.slots.find((item) => item.id === booking.slotId),
-    }))
+    .map((booking) => {
+      const customer = database.users.find((user) => user.id === booking.userId);
+      return {
+        ...booking,
+        customer: customer?.name ?? "Unknown customer",
+        customerEmail: customer?.email,
+        customerPhone: customer?.phone,
+        readingType: database.readingTypes.find((item) => item.id === booking.readingTypeId),
+        sessionFormat: database.sessionFormats.find((item) => item.id === booking.sessionFormatId),
+        slot: database.slots.find((item) => item.id === booking.slotId),
+      };
+    })
     .filter((booking) => !date || booking.slot?.date === date)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 

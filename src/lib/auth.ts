@@ -7,7 +7,13 @@ import type { User, UserRole } from "@/types";
 export const SESSION_COOKIE = "btt_session";
 
 function secretKey() {
-  return new TextEncoder().encode(process.env.JWT_SECRET || "development-only-change-me");
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) throw new Error("JWT_SECRET must be configured with at least 32 characters");
+  return new TextEncoder().encode(secret);
+}
+
+export function assertAuthConfiguration() {
+  secretKey();
 }
 
 export function hashPassword(password: string) {
@@ -20,7 +26,9 @@ export function verifyPassword(password: string, storedHash: string) {
   const [salt, expected] = storedHash.split(":");
   if (!salt || !expected) return false;
   const actual = crypto.scryptSync(password, salt, 64).toString("hex");
-  return crypto.timingSafeEqual(Buffer.from(actual, "hex"), Buffer.from(expected, "hex"));
+  const expectedBuffer = Buffer.from(expected, "hex");
+  const actualBuffer = Buffer.from(actual, "hex");
+  return expectedBuffer.length === actualBuffer.length && crypto.timingSafeEqual(actualBuffer, expectedBuffer);
 }
 
 export async function createSessionToken(user: Pick<User, "id" | "role">) {

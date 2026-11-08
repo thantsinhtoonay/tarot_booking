@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/client";
 import type { User } from "@/types";
 import { Logo } from "@/components/Logo";
+import { LanguageToggle, useLanguage } from "@/components/LanguageProvider";
 
 type LoginPortal = "customer" | "admin";
 
 export function LoginForm({ portal = "customer" }: { portal?: LoginPortal }) {
   const router = useRouter();
   const isAdmin = portal === "admin";
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -30,12 +32,12 @@ export function LoginForm({ portal = "customer" }: { portal?: LoginPortal }) {
 
       if (isAdmin && user.role !== "admin") {
         await api<null>("/api/auth/logout", { method: "POST" });
-        throw new Error("This account does not have astrologer portal access.");
+        throw new Error(isAdmin ? "This account does not have astrologer portal access." : t.accountRoleError);
       }
 
       router.replace(user.role === "admin" ? "/admin" : "/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to sign in");
+      setError(err instanceof Error ? err.message : t.unableSignIn);
     } finally {
       setBusy(false);
     }
@@ -44,26 +46,26 @@ export function LoginForm({ portal = "customer" }: { portal?: LoginPortal }) {
   return (
     <main className="auth-page">
       <section className={`glass-card auth-card ${isAdmin ? "admin-auth-card" : ""}`}>
-        <Logo />
-        <div className="auth-kicker">{isAdmin ? "Private astrologer workspace" : "Private reading space"}</div>
-        <h1>{isAdmin ? "Astrologer sign in." : "Welcome back."}</h1>
-        <p>{isAdmin ? "Review readings, confirm payments, and publish the daily message from one calm workspace." : "Return to your reading space and follow what is unfolding."}</p>
+        <div className="auth-card-top"><Logo />{!isAdmin && <LanguageToggle />}</div>
+        <div className="auth-kicker">{isAdmin ? "Private astrologer workspace" : t.privateReadingSpace}</div>
+        <h1>{isAdmin ? "Astrologer sign in." : t.authWelcome}</h1>
+        <p>{isAdmin ? "Review readings, confirm payments, and publish the daily message from one calm workspace." : t.authDescription}</p>
         <form className="form" onSubmit={submit}>
           <div className="field">
-            <label htmlFor="email">Email address</label>
+            <label htmlFor="email">{t.emailAddress}</label>
             <input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" />
           </div>
           <div className="field">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t.password}</label>
             <input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete={isAdmin ? "current-password" : "current-password"} />
           </div>
           {error && <p className="form-message" role="alert">{error}</p>}
-          <button className="button" disabled={busy}>{busy ? "Checking access…" : isAdmin ? "Enter astrologer portal" : "Sign in"}</button>
+          <button className="button" disabled={busy}>{busy ? t.checkingAccess : isAdmin ? "Enter astrologer portal" : t.signIn}</button>
         </form>
         {isAdmin ? (
-          <p className="auth-switch">Customer account? <Link href="/login">Use customer sign in</Link></p>
+          <p className="auth-switch">Customer account? <Link href="/login">{t.useCustomerSignIn}</Link></p>
         ) : (
-          <p className="auth-switch">New to Bhone Thaw-Tarot? <Link href="/register">Create an account</Link></p>
+          <p className="auth-switch">{t.newToBhoneThaw} <Link href="/register">{t.createAccount}</Link></p>
         )}
       </section>
     </main>

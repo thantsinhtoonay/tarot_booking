@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { fail, ok, withoutPassword } from "@/lib/api";
+import { fail, ok, originGuard, withoutPassword } from "@/lib/api";
 import { requireUser } from "@/lib/auth";
 import { readDatabase, updateDatabase } from "@/lib/db";
 import { dateValue, jsonBody, stringValue } from "@/lib/validate";
@@ -12,15 +12,17 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const originError = originGuard(request);
+  if (originError) return originError;
   const user = await requireUser(request);
   if (!user) return fail("authentication required", 401);
   try {
     const body = await jsonBody(request);
-    const name = body.name === undefined ? undefined : stringValue(body.name, "name");
-    const phone = body.phone === undefined ? undefined : stringValue(body.phone, "phone", false);
+    const name = body.name === undefined ? undefined : stringValue(body.name, "name", true, 120);
+    const phone = body.phone === undefined ? undefined : stringValue(body.phone, "phone", false, 32);
     const dob = body.dob === undefined ? undefined : dateValue(body.dob, "dob");
-    const tob = body.tob === undefined ? undefined : stringValue(body.tob, "tob", false);
-    const bio = body.bio === undefined ? undefined : stringValue(body.bio, "bio", false);
+    const tob = body.tob === undefined ? undefined : stringValue(body.tob, "tob", false, 5);
+    const bio = body.bio === undefined ? undefined : stringValue(body.bio, "bio", false, 2_000);
 
     const updated = await updateDatabase((database) => {
       const storedUser = database.users.find((item) => item.id === user.id);

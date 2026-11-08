@@ -2,7 +2,7 @@ export type UserRole = "customer" | "admin";
 export type AuthProvider = "email" | "google";
 export type WalletId = "kpay" | "wavepay" | "aya" | "cbpay";
 export type BookingStatus = "pending_payment" | "confirmed" | "completed" | "rejected";
-export type ReadingTypeId = "love" | "career" | "overall" | "custom";
+export type ReadingTypeId = string;
 export type SessionFormatId = "written" | "voice" | "video";
 
 export interface User {
@@ -24,6 +24,7 @@ export interface ReadingType {
   title: string;
   description: string;
   price: number;
+  isActive?: boolean;
 }
 
 export interface SessionFormat {
@@ -39,6 +40,23 @@ export interface TimeSlot {
   startTime: string;
   endTime: string;
   isBooked: boolean;
+  isBlocked?: boolean;
+}
+
+export type DateRuleStatus = "open" | "closed";
+
+export interface AvailabilitySettings {
+  startTime: string;
+  endTime: string;
+  slotDurationMin: number;
+  defaultOpen: boolean;
+}
+
+export interface DateRule {
+  date: string;
+  status: DateRuleStatus;
+  note?: string;
+  updatedAt: string;
 }
 
 export interface Booking {
@@ -51,6 +69,9 @@ export interface Booking {
   dob: string;
   tob: string;
   questions?: string;
+  viberNumber: string;
+  telegramId?: string;
+  facebookLink?: string;
   amount: number;
   wallet?: WalletId;
   merchantAccountSnapshot?: string;
@@ -82,6 +103,12 @@ export interface DailyTarotMessage {
   updatedAt: string;
 }
 
+export interface UploadRecord {
+  filename: string;
+  userId: string;
+  createdAt: string;
+}
+
 export interface Profile {
   userId: string;
   bio?: string;
@@ -94,8 +121,11 @@ export interface Database {
   readingTypes: ReadingType[];
   sessionFormats: SessionFormat[];
   slots: TimeSlot[];
+  availabilitySettings: AvailabilitySettings;
+  dateRules: DateRule[];
   bookings: Booking[];
   paymentVerifications: PaymentVerification[];
+  uploads: UploadRecord[];
   dailyMessages: DailyTarotMessage[];
   profiles: Profile[];
 }

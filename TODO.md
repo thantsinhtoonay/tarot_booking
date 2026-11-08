@@ -20,8 +20,8 @@ Living backlog. Check off when done; move finished items under **Done**.
 
 ## Docs
 
-- [ ] Update `SPEC.md` language note: product is bilingual **customer-only** (EN/MY); admin remains English
-- [ ] Document the shared floating glass UI system, motion curve, active indicators, and logo-based loading treatment
+- [x] Update `SPEC.md` language note: product is bilingual **customer-only** (EN/MY); admin remains English
+- [x] Document the shared floating glass UI system, motion curve, active indicators, and logo-based loading treatment
 
 ## Done (recent)
 
@@ -29,6 +29,11 @@ Living backlog. Check off when done; move finished items under **Done**.
 - [x] Admin portal access: role-aware login redirect to `/admin`, customer/admin portal guards, and documented local admin promotion flow
 - [x] Admin portal rebuild: dedicated admin login, dashboard summary, booking search/review, calendar controls, and daily-message preview
 - [x] Daily tarot image picker: admin upload, validation, preview, and customer dashboard rendering
+- [x] Payment merchant details, copy action, receipt preview, and receipt validation
+- [x] Admin booking detail drawer with receipt inspection, wallet/transaction details, and contact shortcuts
+- [x] Admin calendar month/week toggle with clickable booking details
+- [x] Daily message update/delete controls and API delete route
+- [x] Customer-only EN/MY language toggle while keeping the admin portal English-only
 - [x] Frontend clients and UI routes for the API endpoints
 - [x] README: setup, route reference, PowerShell smoke tests, admin verification flow, and local database reset instructions
 - [ ] Production hardening: middleware security headers + rate limits, auth cookie-only tokens, upload auth, receipt validation, booking idempotency chain
@@ -40,7 +45,7 @@ Living backlog. Check off when done; move finished items under **Done**.
 - [ ] ESLint config; Dockerfile (`output: standalone`); `.gitignore` fixes
 - [ ] README API + deploy checklist
 - [ ] Core app: auth, bookings, payment verify, daily post, calendar, tarot picker (78 cards)
-- [ ] Layout alignment, About split, customer EN/MY + typography skill
+- [x] Layout alignment, About split, customer EN/MY + typography skill
 - [ ] Booking submit toasts + double-submit guard
 - [ ] UI visibility pass, admin calendar redesign, DatePicker/TimePicker, slot chips
 - [ ] Landing hero → shared `DailyMessageCard`; mobile nav Sign In + centered daily image
@@ -56,5 +61,5 @@ npm run lint
 # dev up, then HTTP 200 on public + portal routes (see AGENT.md)
 ```
 
-- [ ] Admin portal still English-only, no language switcher
+- [x] Admin portal still English-only, no language switcher
 - [ ] Customer booking create → success toast; second rapid click → “please wait” info toast

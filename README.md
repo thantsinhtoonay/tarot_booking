@@ -17,13 +17,15 @@ The first application UI is now implemented as well: a responsive public landing
 - Reading-service catalog and generated booking slots
 - Customer booking creation and lookup
 - Wallet payment-proof submission
+- Payment step with wallet merchant details, copy-number action, transaction ID validation, and receipt preview
 - Daily tarot message lookup
-- Admin booking filtering and payment verification
-- Admin daily-message publishing/updating
+- Admin booking filtering, receipt inspection, quick contact, and payment verification
+- Admin daily-message publishing/updating/deleting with image picker and live preview
 - Responsive glassmorphic public and authenticated UI
 - Customer dashboard with daily message and booking history
 - Four-step booking flow: focus, format/time, details, payment proof
-- Admin overview, booking review, monthly calendar, and daily-message publisher
+- Admin overview, booking review drawer, month/week calendar, and daily-message publisher
+- Customer-only English/Myanmar language toggle; admin portal remains English-only
 - Admin daily-message image picker with authenticated PNG/JPEG/WebP upload, thumbnail preview, and customer-card rendering
 - Landing-page visual pass: header-safe spacing, readable hero hierarchy, intentional CTA/proof row, and responsive navigation
 - About-page visual hierarchy: astrologer-first bio card with circular photo frame; developer story remains secondary below
@@ -136,7 +138,7 @@ There are not yet automated unit or integration test files. Until those are adde
 | `/dashboard/about` | Authenticated about page |
 | `/admin` | Admin overview |
 | `/admin/bookings` | Booking list and payment decisions |
-| `/admin/calendar` | Monthly booking calendar |
+| `/admin/calendar` | Monthly/weekly booking calendar and booking detail drawer |
 | `/admin/daily` | Daily message publisher |
 
 ### UI smoke test
@@ -145,14 +147,16 @@ There are not yet automated unit or integration test files. Until those are adde
 2. Open `/register`, create a customer, and confirm redirection to `/dashboard`.
 3. Confirm the dashboard loads the daily-message placeholder and an empty booking state.
 4. Open `/dashboard/book` and move through all four steps.
-5. Select a focus, format, generated slot, customer details, wallet, and transaction ID.
+5. Select a focus, format, generated slot, customer details, wallet, transaction ID, and a PNG/JPG/WebP receipt image (max 5MB). Confirm the merchant account details, copy action, and receipt preview.
 6. Submit the booking and confirm the success state.
 7. Open `/dashboard/profile` and confirm the booking appears with `pending payment` status.
 8. Sign out and sign back in through `/login`.
-9. For admin testing, promote a local test user to `admin` in `.data/db.json`, sign out, and sign in through `/admin/login`. Admin users are also redirected automatically to `/admin` when they use `/login`; verify `/admin` and `/admin/bookings`.
-10. Open `/admin/daily`, choose a tarot image with the file picker (PNG/JPG/WebP, maximum 5MB), confirm the thumbnail preview, publish the daily message, then refresh `/dashboard` as the customer and confirm both text and image appear.
-11. Check the public landing page at desktop width and confirm the fixed header never overlaps the hero eyebrow or heading.
-12. Check the landing and About pages below 580px wide: navigation remains usable, hero text stays within the viewport, and astrologer/developer cards stack without horizontal overflow.
+9. Sign in at `/admin/login` with the seeded admin account documented below and verify `/admin`, `/admin/bookings`, `/admin/calendar`, and `/admin/daily`.
+10. In `/admin/bookings`, click a customer row, inspect the receipt/transaction/wallet details, and approve or reject the payment. In `/admin/calendar`, switch Month/Week and click an event to open the same detail drawer.
+11. Open `/admin/daily`, choose a tarot image with the file picker (PNG/JPG/WebP, maximum 5MB), confirm the thumbnail preview, publish/update/delete the daily message, then refresh `/dashboard` as the customer and confirm the result.
+12. On the customer portal, use the `မြန်မာ` / `EN` toggle and confirm customer navigation changes while the admin portal stays English-only.
+13. Check the public landing page at desktop width and confirm the fixed header never overlaps the hero eyebrow or heading.
+14. Check the landing and About pages below 580px wide: navigation remains usable, hero text stays within the viewport, and astrologer/developer cards stack without horizontal overflow.
 
 ## API smoke test
 
@@ -350,27 +354,7 @@ Invoke-RestMethod "http://localhost:3000/api/daily-message?date=2026-10-30"
 
 ## Admin API testing
 
-Admin endpoints and the admin portal require a user whose stored `role` is `admin`. There is no public admin bootstrap endpoint; local development uses the role-promotion step below. After promotion, sign in through `/login`; the login screen reads the returned user role and sends admins to `/admin` automatically.
-
-For local-only testing, stop the dev server, open `.data/db.json`, and change one user record:
-
-```json
-{
-  "role": "admin"
-}
-```
-
-PowerShell shortcut for a user created as `admin-test@example.com`:
-
-```powershell
-$db = Get-Content .data\db.json -Raw | ConvertFrom-Json
-$user = $db.users | Where-Object { $_.email -eq "admin-test@example.com" }
-if (-not $user) { throw "User not found" }
-$user.role = "admin"
-$db | ConvertTo-Json -Depth 20 | Set-Content .data\db.json
-```
-
-Restart the dev server, sign out of the browser, and sign in at `/admin/login`. The login response includes the user's role, so an admin is sent to `/admin` automatically. Opening `/dashboard` as an admin also redirects to `/admin`; a customer opening `/admin` is sent back to `/dashboard`.
+Admin endpoints and the admin portal require a user whose stored `role` is `admin`. The supported local bootstrap command is `npm run admin:set`; it creates or updates the account and stores only a scrypt password hash. Opening `/dashboard` as an admin redirects to `/admin`; a customer opening `/admin` is sent back to `/dashboard`.
 
 ### Clear login instructions
 
@@ -382,11 +366,26 @@ Customer login:
 
 Local admin login:
 
-1. Create a normal account at `/register` using a dedicated email such as `admin-test@example.com`.
-2. Stop the dev server and change that user's `role` to `admin` using the PowerShell command above.
-3. Restart the dev server.
-4. Open `/admin/login` and sign in with the same email and password.
-5. The admin portal opens at `/admin`.
+Use the configured local admin account:
+
+```text
+Email: admin123@gmail.com
+Password: password
+Login URL: http://localhost:3000/admin/login
+```
+
+1. Start the dev server with `npm run dev`.
+2. Open `http://localhost:3000/admin/login`.
+3. Sign in with the credentials above.
+4. The admin portal opens at `/admin`.
+
+To recreate or reset this local admin account:
+
+```powershell
+npm run admin:set -- admin123@gmail.com password
+```
+
+The command stores only a scrypt password hash in `.data/db.json`; the database file is local and ignored by Git.
 
 Admin access is not created by public registration. If `/admin/login` says the account does not have astrologer portal access, the user's stored role is still `customer`, or the local database was reset and the user has not been promoted again.
 
@@ -491,11 +490,12 @@ This clears all local customer/admin accounts, profiles, bookings, payment verif
 | `GET` | `/api/admin/bookings` | Admin | Booking management |
 | `POST` | `/api/admin/bookings/:id/verify` | Admin | Payment decision |
 | `POST` | `/api/admin/daily-message` | Admin | Publish daily message |
+| `DELETE` | `/api/admin/daily-message?date=YYYY-MM-DD` | Admin | Delete daily message |
 
 ## Known limitations and next tests
 
 - File-backed persistence is for local development only.
-- There is no admin bootstrap endpoint yet.
+- Admin bootstrap is local-only through `npm run admin:set`; use a strong replacement password before any shared deployment.
 - Receipt upload accepts authenticated PNG, JPEG, and WebP files up to 5MB and stores them under `.data/uploads` for local development.
 - No automated unit or integration test suite exists yet.
 - Add tests for duplicate bookings, invalid dates, expired sessions, rejected payments, and concurrent slot claims.

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bhone Thaw-Tarot customer and astrologer portal user guide.">
+  <title>Bhone Thaw-Tarot — Complete User Guide</title>
+  <style>
+    :root {
+      --ink: #f7f2e8;
+      --muted: #aeb3c7;
+      --gold: #e5c158;
+      --gold-deep: #b88e24;
+      --navy: #0b0d1b;
+      --surface: #151932;
+      --surface-soft: rgba(255,255,255,.06);
+      --line: rgba(229,193,88,.28);
+      --teal: #72c5d9;
+      --green: #8de3c4;
+      --shadow: 0 24px 70px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: radial-gradient(circle at 10% 0%, #19344a 0, transparent 35rem), radial-gradient(circle at 90% 10%, #252044 0, transparent 34rem), var(--navy); color: var(--ink); font: 16px/1.7 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: var(--gold); }
+    a:hover { color: #fff1a7; }
+    .wrap { width: min(1120px, calc(100% - 2rem)); margin: auto; }
+    .topbar { position: sticky; top: 0; z-index: 5; border-bottom: 1px solid rgba(255,255,255,.12); background: rgba(11,13,27,.9); backdrop-filter: blur(18px); }
+    .topbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 68px; }
+    .brand { display: inline-flex; align-items: center; gap: .75rem; color: var(--ink); font-family: Georgia, serif; font-size: 1.05rem; font-weight: 700; text-decoration: none; }
+    .brand-mark { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: linear-gradient(145deg, rgba(229,193,88,.28), rgba(13,92,117,.25)); color: var(--gold); }
+    nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .35rem; }
+    nav a { border-radius: 999px; padding: .42rem .7rem; color: var(--muted); font-size: .78rem; text-decoration: none; }
+    nav a:hover { background: var(--surface-soft); color: var(--gold); }
+    .hero { position: relative; overflow: hidden; padding: 6.5rem 0 5.5rem; }
+    .hero::after { position: absolute; right: -9rem; bottom: -14rem; width: 30rem; height: 30rem; border: 1px solid rgba(229,193,88,.2); border-radius: 50%; content: ""; }
+    .eyebrow { color: var(--gold); font-size: .75rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+    h1, h2, h3 { line-height: 1.15; }
+    h1 { max-width: 850px; margin: .8rem 0 1rem; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.7rem, 7vw, 5.8rem); font-weight: 600; letter-spacing: -.04em; }
+    h1 span { color: var(--gold); }
+    h2 { margin: 0 0 .8rem; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 600; }
+    h3 { margin: 0 0 .45rem; color: var(--gold); font-size: 1.12rem; }
+    p { margin: 0; color: var(--muted); }
+    .hero-copy { max-width: 700px; font-size: 1.12rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.8rem; }
+    .button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; border: 1px solid var(--gold); border-radius: 999px; padding: .65rem 1.15rem; background: linear-gradient(135deg, #f2d46f, #d4af37); color: #0b0d1b; font-weight: 800; text-decoration: none; }
+    .button.secondary { background: transparent; color: var(--gold); }
+    .section { padding: 4.5rem 0; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.7rem; }
+    .section-heading p { max-width: 520px; }
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card { border: 1px solid rgba(255,255,255,.14); border-radius: 22px; background: linear-gradient(145deg, rgba(255,255,255,.07), transparent 48%), rgba(18,21,43,.78); padding: 1.35rem; box-shadow: 0 16px 40px rgba(0,0,0,.15); }
+    .card p + p { margin-top: .6rem; }
+    .number { display: grid; width: 34px; height: 34px; place-items: center; margin-bottom: .9rem; border: 1px solid var(--line); border-radius: 11px; color: var(--gold); font-weight: 800; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1rem; }
+    .pill { border: 1px solid rgba(229,193,88,.32); border-radius: 999px; padding: .22rem .6rem; color: var(--gold); background: rgba(229,193,88,.08); font-size: .75rem; }
+    .callout { border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(120deg, rgba(13,92,117,.25), rgba(212,175,55,.08)); padding: 1.25rem 1.4rem; }
+    .callout strong { color: var(--ink); }
+    .flow { display: grid; gap: .65rem; counter-reset: guide-step; }
+    .flow-item { display: grid; grid-template-columns: 42px minmax(0,1fr); gap: .8rem; align-items: start; border-bottom: 1px solid rgba(255,255,255,.1); padding: .85rem 0; }
+    .flow-item:last-child { border-bottom: 0; }
+    .flow-item::before { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid var(--line); border-radius: 13px; color: var(--gold); content: counter(guide-step); counter-increment: guide-step; font-weight: 800; }
+    .flow-item strong { color: var(--ink); }
+    .flow-item p { margin-top: .15rem; font-size: .9rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid rgba(255,255,255,.1); padding: .85rem .65rem; text-align: left; vertical-align: top; }
+    th { color: var(--gold); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+    td { color: var(--muted); font-size: .9rem; }
+    td strong { color: var(--ink); }
+    .table-wrap { overflow-x: auto; }
+    details { border-top: 1px solid rgba(255,255,255,.12); padding: .95rem 0; }
+    details:last-child { border-bottom: 1px solid rgba(255,255,255,.12); }
+    summary { cursor: pointer; color: var(--ink); font-weight: 700; }
+    details p { margin-top: .55rem; }
+    .security-list { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
+    .security-list li { position: relative; padding-left: 1.4rem; color: var(--muted); }
+    .security-list li::before { position: absolute; top: .55rem; left: 0; width: .5rem; height: .5rem; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px rgba(141,227,196,.6); content: ""; }
+    .route { display: inline-block; border: 1px solid rgba(114,197,217,.28); border-radius: 7px; padding: .1rem .4rem; color: var(--teal); background: rgba(114,197,217,.08); font: .82em ui-monospace, SFMono-Regular, Consolas, monospace; }
+    footer { border-top: 1px solid rgba(255,255,255,.12); padding: 2.5rem 0 3rem; }
+    footer p { font-size: .83rem; }
+    .bilingual { color: var(--teal); font-size: .9em; }
+    @media (max-width: 800px) {
+      .topbar-inner { align-items: flex-start; flex-direction: column; padding: .75rem 0; }
+      nav { justify-content: flex-start; }
+      .hero { padding-top: 4.5rem; }
+      .section-heading { display: block; }
+      .section-heading p { margin-top: .55rem; }
+      .grid, .grid.two { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 1.2rem, 1120px); }
+      h1 { font-size: 2.8rem; }
+      .hero-copy { font-size: 1rem; }
+      th, td { min-width: 150px; }
+    }
+    @media print {
+      .topbar { position: static; }
+      nav, .actions { display: none; }
+      body { background: white; color: #111; }
+      p, td, .security-list li { color: #333; }
+      h1, h2, h3, .brand, .flow-item strong, summary { color: #111; }
+      .card, .callout { box-shadow: none; background: white; border-color: #bbb; }
+      a { color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top"><span class="brand-mark">✦</span><span>Bhone Thaw-Tarot</span></a>
+      <nav aria-label="Guide sections">
+        <a href="#start">Start here</a>
+        <a href="#customer">Customer</a>
+        <a href="#booking">Booking</a>
+        <a href="#admin">Astrologer</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="eyebrow">A calm guide to the whole reading space</div>
+        <h1>Read clearly. <span>Book confidently.</span> Manage beautifully.</h1>
+        <p class="hero-copy">This guide explains how customers, visitors, and the astrologer use Bhone Thaw-Tarot from the first landing-page visit to the final booking review.</p>
+        <div class="actions">
+          <a class="button" href="http://localhost:3000/">Open the landing page</a>
+          <a class="button secondary" href="#start">Read the guide</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="start">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><div class="eyebrow">Choose your path</div><h2>Three spaces, one thoughtful journey.</h2></div>
+          <p>Use the section that matches your role. The customer portal is designed for simple, guided decisions; the astrologer portal is designed for calm operational control.</p>
+        </div>
+        <div class="grid">
+          <article class="card"><div class="number">01</div><h3>Visitor & marketing site</h3><p>Explore the astrologer, reading formats, services, daily tarot message, contact channels, and the language switch.</p><div class="pill-row"><span class="pill">Landing page</span><span class="pill">Daily tarot</span><span class="pill">Contact</span></div></article>
+          <article class="card"><div class="number">02</div><h3>Customer portal</h3><p>Create an account, choose a reading, reserve an available time, submit payment proof, and follow the booking status.</p><div class="pill-row"><span class="pill">မြန်မာ / EN</span><span class="pill">Booking</span><span class="pill">History</span></div></article>
+          <article class="card"><div class="number">03</div><h3>Astrologer portal</h3><p>Manage services, availability, booking decisions, calendar operations, and the daily tarot message from one workspace.</p><div class="pill-row"><span class="pill">Bookings</span><span class="pill">Availability</span><span class="pill">Services</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="visitor">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">01 · Public experience</div><h2>Turn curiosity into a clear next step.</h2></div><p>The landing page is the marketing front door. It introduces the reading style without overwhelming visitors.</p></div>
+        <div class="grid two">
+          <article class="card">
+            <h3>What visitors can do</h3>
+            <div class="flow">
+              <div class="flow-item"><div><strong>Meet the reading style</strong><p>Read the hero message, astrologer story, and the purpose behind the cards.</p></div></div>
+              <div class="flow-item"><div><strong>Browse services</strong><p>Compare love, career, overall-life, and custom-question readings with their current prices.</p></div></div>
+              <div class="flow-item"><div><strong>View today’s tarot</strong><p>See the published daily card, keywords, advice, and the invitation to start a reading.</p></div></div>
+              <div class="flow-item"><div><strong>Choose a contact channel</strong><p>Open Facebook, Telegram, Viber, or the phone dialer directly from the contact page.</p></div></div>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Language and navigation</h3>
+            <p>The customer-facing landing page and customer portal support English and Burmese.</p>
+            <p class="bilingual">ဘာသာစကားပြောင်းရန် EN / မြန်မာ ခလုတ်ကို အသုံးပြုပါ။</p>
+            <div class="callout" style="margin-top:1rem"><strong>Marketing message</strong><p>Invite visitors to begin with a question, a feeling, or the need for a little clarity. The experience keeps the first action simple: explore a service or begin a reading.</p></div>
+            <div class="pill-row"><span class="pill">Responsive on mobile</span><span class="pill">Daily message</span><span class="pill">Direct contact</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="customer">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">02 · Customer portal</div><h2>Your private reading space.</h2></div><p>Customers move through a guided flow with clear choices, real-time availability, and visible booking status.</p></div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Create an account or sign in</h3>
+            <div class="flow">
+              <div class="flow-item"><div><strong>Register</strong><p>Enter your name, email, phone number, and a password of at least eight characters.</p></div></div>
+              <div class="flow-item"><div><strong>Sign in</strong><p>Use the customer sign-in page to return to your dashboard. Your session is held in a secure HTTP-only cookie.</p></div></div>
+              <div class="flow-item"><div><strong>Use the portal navigation</strong><p>Open Home, Book, About, or Profile. On smaller screens, use the menu drawer or bottom navigation.</p></div></div>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Customer dashboard</h3>
+            <p>The dashboard gives a quick view of the daily message, reading count, recent bookings, payment status, and the next useful action.</p>
+            <div class="pill-row"><span class="pill">Daily tarot message</span><span class="pill">Recent bookings</span><span class="pill">Payment status</span><span class="pill">Profile history</span></div>
+            <div class="callout" style="margin-top:1rem"><strong>Profile maintenance</strong><p>Keep your name, phone, birth date, birth time, and personal note current so future bookings are faster and more personal.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="booking">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">03 · Booking flow</div><h2>A guided path from focus to confirmation.</h2></div><p>The booking form validates every step and checks availability again on the server before reserving a slot.</p></div>
+        <div class="card">
+          <div class="flow">
+            <div class="flow-item"><div><strong>Choose your reading focus</strong><p>Select love, career, overall life, or custom question. Each active service displays its description and current price.</p></div></div>
+            <div class="flow-item"><div><strong>Choose format and time</strong><p>Select written, voice, or video. Choose an open date, then select an available time slot. Past, closed, blocked, booked, and reserved slots are unavailable.</p></div></div>
+            <div class="flow-item"><div><strong>Tell the cards about you</strong><p>Enter your full name, date of birth, time of birth, and the question or context you want the reading to explore.</p></div></div>
+            <div class="flow-item"><div><strong>Add contact details</strong><p>A valid Viber number is required. Telegram username and Facebook link are optional. Continue is blocked until the Viber number is valid.</p></div></div>
+            <div class="flow-item"><div><strong>Confirm payment details</strong><p>Select a wallet, follow the payment guide, enter the transaction ID, upload a clear receipt, and reserve the reading.</p></div></div>
+          </div>
+        </div>
+        <div class="grid two" style="margin-top:1rem">
+          <article class="card"><h3>Contact format examples</h3><table><thead><tr><th>Field</th><th>Accepted example</th></tr></thead><tbody><tr><td><strong>Viber</strong></td><td>+959755266755 or 09755266755</td></tr><tr><td><strong>Telegram</strong></td><td>@Eimfll2947 or Eimfll2947</td></tr><tr><td><strong>Facebook</strong></td><td>https://www.facebook.com/your-profile</td></tr></tbody></table></article>
+          <article class="card"><h3>Before you submit</h3><ul class="security-list"><li>Confirm the selected date and time.</li><li>Pay the exact amount shown in the summary.</li><li>Keep the transaction ID or last six digits ready.</li><li>Upload a readable PNG, JPEG, or WebP receipt under 5MB.</li><li>Never share your password or session cookie.</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="payment">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">04 · Payment session</div><h2>Make payment proof easy to review.</h2></div><p>The payment session is designed to reduce mistakes and give the astrologer the details needed for a quick decision.</p></div>
+        <div class="grid">
+          <article class="card"><div class="number">01</div><h3>Choose the wallet</h3><p>Select the configured KPay, WavePay, AYA Pay, or CB Pay account. The payment amount is calculated from the selected service and format.</p></article>
+          <article class="card"><div class="number">02</div><h3>Pay and capture proof</h3><p>Pay only to the selected account, then save a clear screenshot showing the amount and transaction details.</p></article>
+          <article class="card"><div class="number">03</div><h3>Submit for review</h3><p>Enter the transaction ID, upload the receipt, and reserve. The booking appears as pending payment until the astrologer approves or rejects it.</p></article>
+        </div>
+        <div class="callout" style="margin-top:1rem"><strong>Payment status meaning:</strong> <span class="pill">Pending payment</span> means waiting for review; <span class="pill">Confirmed</span> means accepted; <span class="pill">Rejected</span> means contact the astrologer or submit a corrected booking when appropriate.</div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">05 · Contact channels</div><h2>Choose the channel that feels natural.</h2></div><p>Every channel uses a direct action so a visitor does not need to copy, search, or guess what to do next.</p></div>
+        <div class="grid">
+          <article class="card"><h3>Facebook</h3><p>Open the astrologer’s Facebook profile in a new tab for social updates and broader communication.</p><div class="pill-row"><span class="pill">Social & updates</span><span class="pill">External link</span></div></article>
+          <article class="card"><h3>Telegram</h3><p>Open a direct Telegram chat with <strong>@Eimfll2947</strong>, or copy the handle with one tap.</p><div class="pill-row"><span class="pill">Direct chat</span><span class="pill">Copy handle</span></div></article>
+          <article class="card"><h3>Viber & phone</h3><p>Open Viber messaging, call <strong>+959755266755</strong>, or copy the phone number for later.</p><div class="pill-row"><span class="pill">Viber</span><span class="pill">Phone call</span><span class="pill">Copy number</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="admin">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">06 · Astrologer portal</div><h2>Run the reading space with calm control.</h2></div><p>The astrologer portal is the operational workspace for scheduling, payments, services, and daily customer communication.</p></div>
+        <div class="grid two">
+          <article class="card">
+            <h3>Admin navigation</h3>
+            <table><thead><tr><th>Area</th><th>Use it to</th></tr></thead><tbody>
+              <tr><td><strong>Overview</strong></td><td>See operational stats, current bookings, quick actions, and recent activity.</td></tr>
+              <tr><td><strong>Bookings</strong></td><td>Search, filter, open details, inspect contact/payment information, and approve or reject payment.</td></tr>
+              <tr><td><strong>Calendar</strong></td><td>Review bookings by month or week and open a booking detail drawer.</td></tr>
+              <tr><td><strong>Availability</strong></td><td>Set working hours, slot duration, open/closed dates, and blocked time slots.</td></tr>
+              <tr><td><strong>Services</strong></td><td>Create, edit, activate, or remove reading services and prices.</td></tr>
+              <tr><td><strong>Daily message</strong></td><td>Select a card from the bundled 78-card tarot deck and publish today’s guidance.</td></tr>
+            </tbody></table>
+          </article>
+          <article class="card">
+            <h3>Availability management</h3>
+            <div class="flow">
+              <div class="flow-item"><div><strong>Set operating hours</strong><p>Choose a start time, end time, and slot duration. The schedule must divide evenly into the working window.</p></div></div>
+              <div class="flow-item"><div><strong>Control dates</strong><p>Keep the default schedule open, or define specific open and closed dates for holidays, leave, and special sessions.</p></div></div>
+              <div class="flow-item"><div><strong>Block a window</strong><p>Block an individual time slot when it becomes unavailable. Booked or reserved slots cannot be blocked.</p></div></div>
+              <div class="flow-item"><div><strong>Verify the customer view</strong><p>Open the booking flow and confirm that closed dates and unavailable slots are disabled before announcing availability.</p></div></div>
+            </div>
+          </article>
+        </div>
+        <div class="grid two" style="margin-top:1rem">
+          <article class="card"><h3>Service management</h3><p>Use Services to keep the public catalog accurate. Add a clear title, a concise description, and a positive whole-number price. Existing bookings protect services from unsafe deletion.</p><div class="callout" style="margin-top:1rem"><strong>Marketing tip:</strong><p>Write service descriptions around the customer’s desired clarity, not only the format of the session.</p></div></article>
+          <article class="card"><h3>Daily tarot publishing</h3><p>Choose only from the bundled tarot library, search by card name, review the live preview, add up to eight keywords, write the advice, and publish for the selected date.</p><div class="pill-row"><span class="pill">Bundled deck only</span><span class="pill">Live preview</span><span class="pill">Publish / update / delete</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="security">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">07 · Safe daily operation</div><h2>Protect trust at every step.</h2></div><p>Security is part of the customer experience: private bookings, controlled admin actions, and careful payment-proof handling.</p></div>
+        <div class="grid two">
+          <article class="card"><h3>Built-in protections</h3><ul class="security-list"><li>Admin routes require an administrator session.</li><li>Customers can access only their own bookings and profile data.</li><li>Payment amount is calculated server-side from the selected service and format.</li><li>Receipt URLs must refer to an uploaded image owned by the customer.</li><li>Images are checked for supported type, file size, and file signature.</li><li>State-changing requests are checked against the expected origin.</li><li>Login and registration attempts are throttled.</li></ul></article>
+          <article class="card"><h3>Good operating habits</h3><ul class="security-list"><li>Use a unique, long <code>JWT_SECRET</code> in production.</li><li>Never put passwords, private keys, or payment secrets in public code.</li><li>Review payment receipts before confirming a booking.</li><li>Remove unavailable slots before telling customers they are open.</li><li>Use a production transactional database for multiple server instances.</li><li>Back up booking data and restrict access to the server storage.</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="routes">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">08 · Quick reference</div><h2>Portal map.</h2></div><p>These are the main pages available in the application.</p></div>
+        <div class="card table-wrap"><table><thead><tr><th>Page</th><th>Audience</th><th>Purpose</th></tr></thead><tbody>
+          <tr><td><span class="route">/</span></td><td>Everyone</td><td>Landing page, services, daily tarot, and primary calls to action.</td></tr>
+          <tr><td><span class="route">/contact</span></td><td>Everyone</td><td>Facebook, Telegram, Viber, and phone contact actions.</td></tr>
+          <tr><td><span class="route">/login</span> · <span class="route">/register</span></td><td>Customer</td><td>Customer access and account creation.</td></tr>
+          <tr><td><span class="route">/dashboard</span></td><td>Customer</td><td>Daily message, recent bookings, status, and quick guidance.</td></tr>
+          <tr><td><span class="route">/dashboard/book</span></td><td>Customer</td><td>Guided booking and payment proof submission.</td></tr>
+          <tr><td><span class="route">/dashboard/profile</span></td><td>Customer</td><td>Profile details and booking history.</td></tr>
+          <tr><td><span class="route">/admin/login</span></td><td>Astrologer</td><td>Protected admin sign-in.</td></tr>
+          <tr><td><span class="route">/admin</span></td><td>Astrologer</td><td>Operational overview.</td></tr>
+          <tr><td><span class="route">/admin/bookings</span> · <span class="route">/admin/calendar</span></td><td>Astrologer</td><td>Payment review, booking decisions, and schedule visibility.</td></tr>
+          <tr><td><span class="route">/admin/availability</span> · <span class="route">/admin/services</span></td><td>Astrologer</td><td>Schedule and service catalog management.</td></tr>
+          <tr><td><span class="route">/admin/daily</span></td><td>Astrologer</td><td>Daily tarot card selection and publishing.</td></tr>
+        </tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="wrap">
+        <div class="section-heading"><div><div class="eyebrow">09 · Help center</div><h2>Frequently asked questions.</h2></div><p>Use these answers when onboarding customers or training a new astrologer.</p></div>
+        <div class="card">
+          <details open><summary>Why can’t I select a date?</summary><p>The date may be in the past, closed by the astrologer, or outside the currently generated availability window. Choose another open date or contact the astrologer.</p></details>
+          <details><summary>Why is a time slot disabled?</summary><p>The slot may already be booked, temporarily reserved, manually blocked, or outside the current working-hour settings.</p></details>
+          <details><summary>Can I book without a Viber number?</summary><p>No. The Viber number is required for booking confirmation. Telegram and Facebook are optional contact channels.</p></details>
+          <details><summary>What happens after payment proof is submitted?</summary><p>The booking enters Pending payment. The astrologer reviews the transaction and receipt, then confirms or rejects the booking.</p></details>
+          <details><summary>Can the astrologer upload any tarot image?</summary><p>No. Daily tarot selection is intentionally limited to the bundled tarot deck under the public images folder.</p></details>
+          <details><summary>How do I change the daily message?</summary><p>Open the astrologer portal’s Daily message page, choose the effective date, select a bundled card, edit the advice, and publish. An existing message for that date can be updated or deleted.</p></details>
+          <details><summary>What should I do if a customer paid but the booking was rejected?</summary><p>Review the receipt and transaction details, contact the customer through the provided channel, and agree on the next step before creating or confirming another booking.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><strong>Bhone Thaw-Tarot</strong> · Complete user guide</p>
+      <p style="margin-top:.35rem">Open this file directly in a browser. Update the local application URL in the first button if your server is not running on <span class="route">http://localhost:3000</span>.</p>
+    </div>
+  </footer>
+</body>
+</html>

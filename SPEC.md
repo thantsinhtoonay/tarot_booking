@@ -299,5 +299,6 @@ Sessions use an HTTP-only `btt_session` cookie signed with `JWT_SECRET`. Passwor
 | `GET` | `/api/admin/bookings` | Filter and inspect bookings |
 | `POST` | `/api/admin/bookings/:id/verify` | Approve or reject submitted payment |
 | `POST` | `/api/admin/daily-message` | Publish or update a daily message |
+| `DELETE` | `/api/admin/daily-message?date=YYYY-MM-DD` | Delete a daily message |
 
 Admin bootstrap and production database storage remain follow-up work in `TODO.md`. The implemented login flow routes customers to `/dashboard` and users with `role: "admin"` to `/admin`; the shared app shell prevents users from remaining in the wrong portal.

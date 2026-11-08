@@ -1,6 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { Database, ReadingType, SessionFormat, TimeSlot } from "@/types";
+import { defaultAvailabilitySettings, ensureAvailability } from "@/lib/availability";
+import type { AvailabilitySettings, Database, DateRule, ReadingType, SessionFormat, TimeSlot, UploadRecord } from "@/types";
 
 const dbPath = path.join(process.cwd(), ".data", "db.json");
 
@@ -17,34 +18,34 @@ const sessionFormats: SessionFormat[] = [
   { id: "video", title: "Live Video Call", priceDelta: 10000, durationMin: 45 },
 ];
 
-function formatDate(date: Date) {
-  return date.toISOString().slice(0, 10);
-}
-
-function seedSlots(): TimeSlot[] {
-  const slots: TimeSlot[] = [];
-  for (let day = 0; day < 21; day += 1) {
-    const date = new Date();
-    date.setDate(date.getDate() + day);
-    const dateValue = formatDate(date);
-    for (const [startTime, endTime] of [["10:00", "10:30"], ["13:00", "13:30"], ["16:00", "16:30"]]) {
-      slots.push({ id: `slot-${dateValue}-${startTime.replace(":", "")}`, date: dateValue, startTime, endTime, isBooked: false });
-    }
-  }
-  return slots;
-}
-
 function emptyDatabase(): Database {
-  return {
+  const database: Database = {
     users: [],
     readingTypes,
     sessionFormats,
-    slots: seedSlots(),
+    slots: [],
+    availabilitySettings: { ...defaultAvailabilitySettings },
+    dateRules: [],
     bookings: [],
     paymentVerifications: [],
+    uploads: [],
     dailyMessages: [],
     profiles: [],
   };
+  return ensureAvailability(database);
+}
+
+function normalizeDatabase(value: Partial<Database>): Database {
+  const fallback = emptyDatabase();
+  const database: Database = {
+    ...fallback,
+    ...value,
+    availabilitySettings: { ...defaultAvailabilitySettings, ...(value.availabilitySettings as Partial<AvailabilitySettings> | undefined) },
+    dateRules: Array.isArray(value.dateRules) ? value.dateRules as DateRule[] : [],
+    slots: Array.isArray(value.slots) ? (value.slots as TimeSlot[]).map((slot) => ({ ...slot, isBlocked: Boolean(slot.isBlocked) })) : [],
+    uploads: Array.isArray(value.uploads) ? value.uploads as UploadRecord[] : [],
+  };
+  return ensureAvailability(database);
 }
 
 async function ensureDatabase() {
@@ -58,17 +59,23 @@ async function ensureDatabase() {
 
 export async function readDatabase(): Promise<Database> {
   await ensureDatabase();
-  return JSON.parse(await fs.readFile(dbPath, "utf8")) as Database;
+  return normalizeDatabase(JSON.parse(await fs.readFile(dbPath, "utf8")) as Partial<Database>);
 }
 
 export async function writeDatabase(database: Database) {
   await ensureDatabase();
-  await fs.writeFile(dbPath, JSON.stringify(database, null, 2), "utf8");
+  await fs.writeFile(dbPath, JSON.stringify(ensureAvailability(database), null, 2), "utf8");
 }
 
-export async function updateDatabase<T>(mutator: (database: Database) => T | Promise<T>): Promise<T> {
-  const database = await readDatabase();
-  const result = await mutator(database);
-  await writeDatabase(database);
-  return result;
+let databaseQueue: Promise<void> = Promise.resolve();
+
+export function updateDatabase<T>(mutator: (database: Database) => T | Promise<T>): Promise<T> {
+  const operation = databaseQueue.then(async () => {
+    const database = await readDatabase();
+    const result = await mutator(database);
+    await writeDatabase(database);
+    return result;
+  });
+  databaseQueue = operation.then(() => undefined, () => undefined);
+  return operation;
 }

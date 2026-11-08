@@ -1,17 +1,19 @@
 import { NextRequest } from "next/server";
-import { fail, ok } from "@/lib/api";
+import { fail, ok, originGuard } from "@/lib/api";
 import { requireUser } from "@/lib/auth";
 import { updateDatabase } from "@/lib/db";
 import { jsonBody, stringValue } from "@/lib/validate";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const originError = originGuard(request);
+  if (originError) return originError;
   const admin = await requireUser(request, "admin");
   if (!admin) return fail("admin authentication required", 403);
   try {
     const { id } = await params;
     const body = await jsonBody(request);
     const decision = stringValue(body.decision, "decision");
-    const adminNote = stringValue(body.adminNote, "adminNote", false);
+    const adminNote = stringValue(body.adminNote, "adminNote", false, 2_000);
     if (decision !== "approved" && decision !== "rejected") return fail("decision must be approved or rejected");
 
     const booking = await updateDatabase((database) => {
