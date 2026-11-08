@@ -64,6 +64,10 @@ function hasPostgresDatabase() {
   return Boolean(process.env.DATABASE_URL?.trim());
 }
 
+function shouldUsePostgresStorage() {
+  return hasPostgresDatabase() || process.env.VERCEL === "1";
+}
+
 let postgresPool: Pool | undefined;
 
 function getPostgresPool() {
@@ -186,7 +190,7 @@ async function updatePostgresDatabase<T>(mutator: (database: Database) => T | Pr
 }
 
 export function usesPostgresStorage() {
-  return hasPostgresDatabase();
+  return shouldUsePostgresStorage();
 }
 
 export async function saveUploadBlob(input: {
@@ -217,7 +221,7 @@ export async function readUploadBlob(filename: string) {
 }
 
 export async function readDatabase(): Promise<Database> {
-  if (hasPostgresDatabase()) {
+  if (shouldUsePostgresStorage()) {
     return readPostgresDatabase();
   }
 
@@ -226,7 +230,7 @@ export async function readDatabase(): Promise<Database> {
 }
 
 export async function writeDatabase(database: Database) {
-  if (hasPostgresDatabase()) {
+  if (shouldUsePostgresStorage()) {
     await writePostgresDatabase(getPostgresPool(), database);
     return;
   }
@@ -238,7 +242,7 @@ export async function writeDatabase(database: Database) {
 let databaseQueue: Promise<void> = Promise.resolve();
 
 export function updateDatabase<T>(mutator: (database: Database) => T | Promise<T>): Promise<T> {
-  if (hasPostgresDatabase()) {
+  if (shouldUsePostgresStorage()) {
     return updatePostgresDatabase(mutator);
   }
 
