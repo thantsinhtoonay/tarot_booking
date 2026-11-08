@@ -4,7 +4,7 @@ import path from "node:path";
 import { NextRequest } from "next/server";
 import { fail, ok, originGuard } from "@/lib/api";
 import { requireUser } from "@/lib/auth";
-import { updateDatabase } from "@/lib/db";
+import { saveUploadBlob, updateDatabase, usesPostgresStorage } from "@/lib/db";
 
 const allowedTypes = new Map([["image/png", ".png"], ["image/jpeg", ".jpg"], ["image/webp", ".webp"]]);
 const maxBytes = 5 * 1024 * 1024;
@@ -33,9 +33,13 @@ export async function POST(request: NextRequest) {
     const bytes = Buffer.from(await value.arrayBuffer());
     if (!hasImageSignature(bytes, value.type)) return fail("file content does not match its image type");
     const filename = `${crypto.randomUUID()}${extension}`;
-    const directory = path.join(process.cwd(), ".data", "uploads");
-    await fs.mkdir(directory, { recursive: true });
-    await fs.writeFile(path.join(directory, filename), bytes, { flag: "wx" });
+    if (usesPostgresStorage()) {
+      await saveUploadBlob({ filename, userId: user.id, contentType: value.type, data: bytes });
+    } else {
+      const directory = path.join(process.cwd(), ".data", "uploads");
+      await fs.mkdir(directory, { recursive: true });
+      await fs.writeFile(path.join(directory, filename), bytes, { flag: "wx" });
+    }
     await updateDatabase((database) => {
       database.uploads.push({ filename, userId: user.id, createdAt: new Date().toISOString() });
     });

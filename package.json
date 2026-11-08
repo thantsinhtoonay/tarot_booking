@@ -7,10 +7,12 @@
     "build": "node scripts/build.mjs",
     "start": "next start",
     "admin:set": "node scripts/set-admin.mjs",
+    "db:migrate": "node scripts/migrate-neon.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
     "jose": "^6.2.12",
     "next": "^16.4.3",
     "react": "^19.1.1",
